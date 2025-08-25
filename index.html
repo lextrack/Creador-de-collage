@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Collage</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="toolbar">
+        <input type="file" id="imageInput" accept="image/*" multiple>
+        <button onclick="clearCollage()">Limpiar Todo</button>
+        <button onclick="randomizePositions()">Posiciones Aleatorias</button>
+        <button onclick="exportPNG()">Exportar PNG</button>
+        <input type="color" id="bgColorPicker" value="#ffffff" onchange="changeBackground(this.value)">
+        <select id="gridSelect" onchange="changeGrid(this.value)">
+            <option value="none">Sin Grid</option>
+            <option value="tiny">Grid 5px</option>
+            <option value="small">Grid 10px</option>
+            <option value="medium">Grid 20px</option>
+            <option value="large">Grid 40px</option>
+            <option value="xlarge">Grid 60px</option>
+            <option value="xxlarge">Grid 80px</option>
+        </select>
+        <span>Imágenes: <span id="imageCount">0</span></span>
+    </div>
+
+    <div class="collage-area" id="collageArea"></div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
