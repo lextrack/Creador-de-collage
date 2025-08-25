@@ -32,7 +32,7 @@ Una aplicación web simple para crear collages con imágenes. Perfecto para orga
 | **Posiciones Aleatorias** | Reorganiza todas las imágenes aleatoriamente |
 | **Exportar PNG** | Descarga el collage como imagen PNG |
 | **Color de fondo** | Selector de color para el fondo del lienzo |
-| **Grid** | 6 opciones: Sin Grid, 5px, 10px, 20px, 40px, 60px, 80px |
+| **Grid** | 7 opciones: Sin Grid, 5px, 10px, 20px, 40px, 60px, 80px y tipo hoja|
 
 ### Opciones de Grid
 
@@ -40,6 +40,7 @@ El grid ayuda a alinear las imágenes de forma precisa:
 
 - **Sin Grid**: Movimiento libre
 - **5px - 80px**: Diferentes tamaños de cuadrícula con snap automático
+- **Hoja**: Para mayor atención en posiciones verticales
 
 Cuando seleccionas un grid, las imágenes se "pegan" automáticamente a la cuadrícula al moverlas.
 
@@ -50,7 +51,3 @@ Al hacer clic en "Exportar PNG":
 - Se añade un pequeño margen alrededor
 - El fondo conserva el color seleccionado
 - Se descarga automáticamente como `collage-comics.png`
-
-## 📄 Licencia
-
-Este proyecto es de código abierto. Puedes usarlo, modificarlo y distribuirlo libremente.

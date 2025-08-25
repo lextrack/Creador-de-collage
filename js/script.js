@@ -5,10 +5,13 @@ let isResizing = false;
 let dragOffset = { x: 0, y: 0 };
 let currentGrid = 'none';
 let gridSize = 0;
+let resizeDirection = null;
 
 const collageArea = document.getElementById('collageArea');
 const imageInput = document.getElementById('imageInput');
 const imageCountSpan = document.getElementById('imageCount');
+
+document.addEventListener('keydown', handleKeyDown);
 
 imageInput.addEventListener('change', function(e) {
     const files = e.target.files;
@@ -30,36 +33,32 @@ function createphotoCard(file) {
             const card = document.createElement('div');
             card.className = 'photo-card';
             card.id = `card${imageCounter}`;
+            card.tabIndex = 0;
             
-            const maxX = collageArea.clientWidth - 200;
-            const maxY = collageArea.clientHeight - 200;
-            const x = Math.random() * maxX;
-            const y = Math.random() * maxY;
+            const position = getRandomPosition(img.width, img.height);
             
-            const aspectRatio = img.width / img.height;
-            let cardWidth, cardHeight;
-            
-            if (aspectRatio > 1) {
-                cardWidth = 200;
-                cardHeight = 200 / aspectRatio;
-            } else {
-                cardHeight = 200;
-                cardWidth = 200 * aspectRatio;
-            }
-            
-            card.style.left = x + 'px';
-            card.style.top = y + 'px';
-            card.style.width = cardWidth + 'px';
-            card.style.height = cardHeight + 'px';
+            card.style.left = position.x + 'px';
+            card.style.top = position.y + 'px';
+            card.style.width = position.width + 'px';
+            card.style.height = position.height + 'px';
             
             card.innerHTML = `
                 <img src="${e.target.result}" alt="photo ${imageCounter}">
-                <div class="resize-handle"></div>
+                <div class="resize-handle nw"></div>
+                <div class="resize-handle ne"></div>
+                <div class="resize-handle sw"></div>
+                <div class="resize-handle se"></div>
                 <button class="delete-btn" onclick="deleteCard(this)">×</button>
             `;
             
             card.addEventListener('mousedown', startDrag);
-            card.querySelector('.resize-handle').addEventListener('mousedown', startResize);
+            card.addEventListener('focus', function() {
+                selectCard(this);
+            });
+            
+            card.querySelectorAll('.resize-handle').forEach(handle => {
+                handle.addEventListener('mousedown', startResize);
+            });
             
             collageArea.appendChild(card);
             updateImageCount();
@@ -70,6 +69,116 @@ function createphotoCard(file) {
     reader.readAsDataURL(file);
 }
 
+function getRandomPosition(imgWidth, imgHeight) {
+    let maxX, maxY, x, y;
+    let aspectRatio = imgWidth / imgHeight;
+    let width, height;
+    
+    if (aspectRatio > 1) {
+        width = 200;
+        height = 200 / aspectRatio;
+    } else {
+        height = 200;
+        width = 200 * aspectRatio;
+    }
+    
+    if (currentGrid === 'letter') {
+        const collageRect = collageArea.getBoundingClientRect();
+        const pageWidth = 816;
+        const pageHeight = 1056;
+        
+        const marginLeft = (collageRect.width - pageWidth) / 2;
+        const marginTop = (collageRect.height - pageHeight) / 2;
+        
+        const padding = 10;
+        maxX = marginLeft + pageWidth - width - padding;
+        maxY = marginTop + pageHeight - height - padding;
+        x = marginLeft + padding + Math.random() * (pageWidth - width - padding * 2);
+        y = marginTop + padding + Math.random() * (pageHeight - height - padding * 2);
+    } else {
+        maxX = collageArea.clientWidth - width;
+        maxY = collageArea.clientHeight - height;
+        x = Math.random() * maxX;
+        y = Math.random() * maxY;
+    }
+    
+    return { x, y, width, height };
+}
+
+function handleKeyDown(e) {
+    if (!selectedCard) return;
+    
+    switch(e.key) {
+        case 'Delete':
+        case 'Suprimir':
+            deleteSelectedCard();
+            break;
+        case 'ArrowUp':
+            moveSelectedCard(0, -1);
+            e.preventDefault();
+            break;
+        case 'ArrowDown':
+            moveSelectedCard(0, 1);
+            e.preventDefault();
+            break;
+        case 'ArrowLeft':
+            moveSelectedCard(-1, 0);
+            e.preventDefault();
+            break;
+        case 'ArrowRight':
+            moveSelectedCard(1, 0);
+            e.preventDefault();
+            break;
+    }
+}
+
+function deleteSelectedCard() {
+    if (selectedCard) {
+        selectedCard.remove();
+        selectedCard = null;
+        updateImageCount();
+    }
+}
+
+function moveSelectedCard(deltaX, deltaY) {
+    if (!selectedCard) return;
+    
+    const currentX = parseInt(selectedCard.style.left) || 0;
+    const currentY = parseInt(selectedCard.style.top) || 0;
+    const step = currentGrid !== 'none' && gridSize > 0 ? gridSize : 1;
+    
+    let newX = currentX + (deltaX * step);
+    let newY = currentY + (deltaY * step);
+    
+    if (currentGrid === 'letter') {
+        const collageRect = collageArea.getBoundingClientRect();
+        const pageWidth = 816;
+        const pageHeight = 1056;
+        const marginLeft = (collageRect.width - pageWidth) / 2;
+        const marginTop = (collageRect.height - pageHeight) / 2;
+        const padding = 10;
+        
+        newX = Math.max(marginLeft + padding, 
+                       Math.min(newX, marginLeft + pageWidth - selectedCard.clientWidth - padding));
+        newY = Math.max(marginTop + padding, 
+                       Math.min(newY, marginTop + pageHeight - selectedCard.clientHeight - padding));
+    } else {
+        newX = Math.max(0, Math.min(newX, collageArea.clientWidth - selectedCard.clientWidth));
+        newY = Math.max(0, Math.min(newY, collageArea.clientHeight - selectedCard.clientHeight));
+    }
+    
+    selectedCard.style.left = newX + 'px';
+    selectedCard.style.top = newY + 'px';
+}
+
+function selectCard(card) {
+    document.querySelectorAll('.photo-card').forEach(c => {
+        c.classList.remove('selected');
+    });
+    card.classList.add('selected');
+    selectedCard = card;
+}
+
 function startDrag(e) {
     if (e.target.classList.contains('resize-handle') || e.target.classList.contains('delete-btn')) {
         return;
@@ -77,13 +186,7 @@ function startDrag(e) {
     
     e.preventDefault();
     isDragging = true;
-    selectedCard = e.currentTarget;
-    
-    document.querySelectorAll('.photo-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    selectedCard.classList.add('selected');
+    selectCard(e.currentTarget);
     
     const rect = selectedCard.getBoundingClientRect();
     
@@ -101,8 +204,21 @@ function drag(e) {
     let x = e.clientX - collageRect.left - dragOffset.x;
     let y = e.clientY - collageRect.top - dragOffset.y;
     
-    x = Math.max(0, Math.min(x, collageArea.clientWidth - selectedCard.clientWidth));
-    y = Math.max(0, Math.min(y, collageArea.clientHeight - selectedCard.clientHeight));
+    if (currentGrid === 'letter') {
+        const pageWidth = 816;
+        const pageHeight = 1056;
+        const marginLeft = (collageRect.width - pageWidth) / 2;
+        const marginTop = (collageRect.height - pageHeight) / 2;
+        const padding = 10;
+        
+        x = Math.max(marginLeft + padding, 
+                    Math.min(x, marginLeft + pageWidth - selectedCard.clientWidth - padding));
+        y = Math.max(marginTop + padding, 
+                    Math.min(y, marginTop + pageHeight - selectedCard.clientHeight - padding));
+    } else {
+        x = Math.max(0, Math.min(x, collageArea.clientWidth - selectedCard.clientWidth));
+        y = Math.max(0, Math.min(y, collageArea.clientHeight - selectedCard.clientHeight));
+    }
     
     if (currentGrid !== 'none' && currentGrid !== 'letter' && gridSize > 0) {
         x = Math.round(x / gridSize) * gridSize;
@@ -115,7 +231,6 @@ function drag(e) {
 
 function stopDrag() {
     isDragging = false;
-    selectedCard = null;
     document.removeEventListener('mousemove', drag);
     document.removeEventListener('mouseup', stopDrag);
 }
@@ -124,7 +239,8 @@ function startResize(e) {
     e.preventDefault();
     e.stopPropagation();
     isResizing = true;
-    selectedCard = e.target.parentElement;
+    resizeDirection = e.target.classList[1];
+    selectCard(e.target.parentElement);
     
     document.addEventListener('mousemove', resize);
     document.addEventListener('mouseup', stopResize);
@@ -134,18 +250,79 @@ function resize(e) {
     if (!isResizing || !selectedCard) return;
     
     const rect = selectedCard.getBoundingClientRect();
-    const width = e.clientX - rect.left;
-    const height = e.clientY - rect.top;
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
     
-    if (width > 50 && height > 50) {
-        selectedCard.style.width = width + 'px';
-        selectedCard.style.height = height + 'px';
+    let newWidth = rect.width;
+    let newHeight = rect.height;
+    let newLeft = parseInt(selectedCard.style.left) || 0;
+    let newTop = parseInt(selectedCard.style.top) || 0;
+    
+    switch(resizeDirection) {
+        case 'nw':
+            newWidth = rect.right - mouseX;
+            newHeight = rect.bottom - mouseY;
+            newLeft = mouseX - collageArea.getBoundingClientRect().left;
+            newTop = mouseY - collageArea.getBoundingClientRect().top;
+            break;
+        case 'ne': 
+            newWidth = mouseX - rect.left;
+            newHeight = rect.bottom - mouseY;
+            newTop = mouseY - collageArea.getBoundingClientRect().top;
+            break;
+        case 'sw':
+            newWidth = rect.right - mouseX;
+            newHeight = mouseY - rect.top;
+            newLeft = mouseX - collageArea.getBoundingClientRect().left;
+            break;
+        case 'se':
+            newWidth = mouseX - rect.left;
+            newHeight = mouseY - rect.top;
+            break;
+    }
+    
+    if (currentGrid === 'letter') {
+        const collageRect = collageArea.getBoundingClientRect();
+        const pageWidth = 816;
+        const pageHeight = 1056;
+        const marginLeft = (collageRect.width - pageWidth) / 2;
+        const marginTop = (collageRect.height - pageHeight) / 2;
+        const padding = 10;
+        
+        if (resizeDirection === 'nw' || resizeDirection === 'sw') {
+            newLeft = Math.max(marginLeft + padding, newLeft);
+        }
+        if (resizeDirection === 'nw' || resizeDirection === 'ne') {
+            newTop = Math.max(marginTop + padding, newTop);
+        }
+        
+        const maxRight = marginLeft + pageWidth - padding;
+        const maxBottom = marginTop + pageHeight - padding;
+        
+        if (newLeft + newWidth > maxRight) {
+            newWidth = maxRight - newLeft;
+        }
+        if (newTop + newHeight > maxBottom) {
+            newHeight = maxBottom - newTop;
+        }
+    }
+    
+    if (newWidth > 50 && newHeight > 50) {
+        selectedCard.style.width = newWidth + 'px';
+        selectedCard.style.height = newHeight + 'px';
+        
+        if (resizeDirection === 'nw' || resizeDirection === 'ne') {
+            selectedCard.style.top = newTop + 'px';
+        }
+        if (resizeDirection === 'nw' || resizeDirection === 'sw') {
+            selectedCard.style.left = newLeft + 'px';
+        }
     }
 }
 
 function stopResize() {
     isResizing = false;
-    selectedCard = null;
+    resizeDirection = null;
     document.removeEventListener('mousemove', resize);
     document.removeEventListener('mouseup', stopResize);
 }
@@ -153,6 +330,9 @@ function stopResize() {
 function deleteCard(button) {
     const card = button.parentElement;
     if (card) {
+        if (card === selectedCard) {
+            selectedCard = null;
+        }
         card.remove();
         updateImageCount();
     }
@@ -162,6 +342,7 @@ function clearCollage() {
     if (confirm('¿Estás seguro de que quieres eliminar todas las imágenes?')) {
         collageArea.innerHTML = '';
         imageCounter = 0;
+        selectedCard = null;
         updateImageCount();
     }
 }
@@ -169,13 +350,11 @@ function clearCollage() {
 function randomizePositions() {
     const cards = document.querySelectorAll('.photo-card');
     cards.forEach(card => {
-        const maxX = collageArea.clientWidth - card.clientWidth;
-        const maxY = collageArea.clientHeight - card.clientHeight;
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
+        const img = card.querySelector('img');
+        const position = getRandomPosition(img.naturalWidth, img.naturalHeight);
         
-        card.style.left = x + 'px';
-        card.style.top = y + 'px';
+        card.style.left = position.x + 'px';
+        card.style.top = position.y + 'px';
     });
 }
 
@@ -308,6 +487,7 @@ collageArea.addEventListener('click', function(e) {
         document.querySelectorAll('.photo-card').forEach(card => {
             card.classList.remove('selected');
         });
+        selectedCard = null;
     }
 });
 
