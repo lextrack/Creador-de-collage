@@ -116,10 +116,10 @@ body {
 
 .collage-area.grid-letter {
     background-image: 
-        linear-gradient(to right, #838282 1px, transparent 1px),
-        linear-gradient(to bottom, #838282 1px, transparent 1px),
-        linear-gradient(to right, transparent 95px, #838282 95px, #838282 96px, transparent 96px, transparent 721px, #838282 721px, #838282 722px, transparent 722px),
-        linear-gradient(to bottom, transparent 95px, #838282 95px, #838282 96px, transparent 96px, transparent 961px, #838282 961px, #838282 962px, transparent 962px);
+        linear-gradient(to right, #b0b0b0 1px, transparent 1px),
+        linear-gradient(to bottom, #b0b0b0 1px, transparent 1px),
+        linear-gradient(to right, transparent 95px, #e0e0e0 95px, #e0e0e0 96px, transparent 96px, transparent 721px, #e0e0e0 721px, #e0e0e0 722px, transparent 722px),
+        linear-gradient(to bottom, transparent 95px, #e0e0e0 95px, #e0e0e0 96px, transparent 96px, transparent 961px, #e0e0e0 961px, #e0e0e0 962px, transparent 962px);
     background-size: 816px 1056px;
     background-position: center;
 }
@@ -132,7 +132,7 @@ body {
     transform: translate(-50%, -50%);
     width: 816px;
     height: 1056px;
-    border: 1px #838282;
+    border: 1px #a0a0a0;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     pointer-events: none;
 }

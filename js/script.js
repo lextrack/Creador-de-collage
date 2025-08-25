@@ -104,7 +104,7 @@ function drag(e) {
     x = Math.max(0, Math.min(x, collageArea.clientWidth - selectedCard.clientWidth));
     y = Math.max(0, Math.min(y, collageArea.clientHeight - selectedCard.clientHeight));
     
-    if (currentGrid !== 'none' && gridSize > 0) {
+    if (currentGrid !== 'none' && currentGrid !== 'letter' && gridSize > 0) {
         x = Math.round(x / gridSize) * gridSize;
         y = Math.round(y / gridSize) * gridSize;
     }
@@ -184,7 +184,7 @@ function changeBackground(color) {
 }
 
 function changeGrid(gridType) {
-    collageArea.classList.remove('grid-tiny', 'grid-small', 'grid-medium', 'grid-large', 'grid-xlarge', 'grid-xxlarge');
+    collageArea.classList.remove('grid-tiny', 'grid-small', 'grid-medium', 'grid-large', 'grid-xlarge', 'grid-xxlarge', 'grid-letter');
     
     currentGrid = gridType;
     
@@ -212,6 +212,10 @@ function changeGrid(gridType) {
         case 'xxlarge':
             collageArea.classList.add('grid-xxlarge');
             gridSize = 80;
+            break;
+        case 'letter':
+            collageArea.classList.add('grid-letter');
+            gridSize = 0;
             break;
         default:
             gridSize = 0;
