@@ -82,13 +82,15 @@ function getRandomPosition(imgWidth, imgHeight) {
         width = 200 * aspectRatio;
     }
     
+    const navbarHeight = 76;
+    
     if (currentGrid === 'letter') {
         const collageRect = collageArea.getBoundingClientRect();
         const pageWidth = 816;
         const pageHeight = 1056;
         
         const marginLeft = (collageRect.width - pageWidth) / 2;
-        const marginTop = (collageRect.height - pageHeight) / 2;
+        const marginTop = (collageRect.height - pageHeight) / 2 + navbarHeight;
         
         const padding = 10;
         maxX = marginLeft + pageWidth - width - padding;
@@ -97,12 +99,93 @@ function getRandomPosition(imgWidth, imgHeight) {
         y = marginTop + padding + Math.random() * (pageHeight - height - padding * 2);
     } else {
         maxX = collageArea.clientWidth - width;
-        maxY = collageArea.clientHeight - height;
+        maxY = collageArea.clientHeight - height - navbarHeight;
         x = Math.random() * maxX;
-        y = Math.random() * maxY;
+        y = navbarHeight + Math.random() * maxY;
     }
     
     return { x, y, width, height };
+}
+
+function applyTemplate(template) {
+    const cards = document.querySelectorAll('.photo-card');
+    if (cards.length === 0) return;
+
+    const collageRect = collageArea.getBoundingClientRect();
+    let pageWidth = currentGrid === 'letter' ? 816 : collageRect.width;
+    let pageHeight = currentGrid === 'letter' ? 1056 : collageRect.height;
+    const navbarHeight = 76;
+    const marginLeft = currentGrid === 'letter' ? (collageRect.width - pageWidth) / 2 : 0;
+    const marginTop = currentGrid === 'letter' ? (collageRect.height - pageHeight) / 2 + navbarHeight : navbarHeight;
+    const padding = 20;
+
+    switch (template) {
+        case 'grid':
+            const gridSize = Math.ceil(Math.sqrt(cards.length));
+            const cardWidth = (pageWidth - padding * (gridSize + 1)) / gridSize;
+            const cardHeight = (pageHeight - padding * (gridSize + 1) - navbarHeight) / gridSize;
+            cards.forEach((card, index) => {
+                const row = Math.floor(index / gridSize);
+                const col = index % gridSize;
+                card.style.left = marginLeft + padding + col * (cardWidth + padding) + 'px';
+                card.style.top = marginTop + padding + row * (cardHeight + padding) + 'px';
+                card.style.width = cardWidth + 'px';
+                card.style.height = cardHeight + 'px';
+                card.style.borderRadius = '0';
+                card.style.transform = 'rotate(0deg)';
+            });
+            break;
+        case 'circle':
+            const radius = Math.min(pageWidth, pageHeight) / 3;
+            const centerX = marginLeft + pageWidth / 2;
+            const centerY = marginTop + pageHeight / 2;
+            const cardSize = Math.min(pageWidth, pageHeight) / (cards.length > 1 ? 4 : 2);
+            cards.forEach((card, index) => {
+                const angle = (index / cards.length) * 2 * Math.PI;
+                card.style.left = centerX + radius * Math.cos(angle) - cardSize / 2 + 'px';
+                card.style.top = centerY + radius * Math.sin(angle) - cardSize / 2 + 'px';
+                card.style.width = cardSize + 'px';
+                card.style.height = cardSize + 'px';
+                card.style.borderRadius = '50%';
+                card.style.transform = 'rotate(0deg)';
+            });
+            break;
+        case 'heart':
+            const heartRadius = Math.min(pageWidth, pageHeight) / 4;
+            const heartCenterX = marginLeft + pageWidth / 2;
+            const heartCenterY = marginTop + pageHeight / 2.5;
+            const heartCardSize = Math.min(pageWidth, pageHeight) / (cards.length > 1 ? 5 : 3);
+            cards.forEach((card, index) => {
+                const t = (index / cards.length) * 2 * Math.PI;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+                card.style.left = heartCenterX + (x * heartRadius / 20) - heartCardSize / 2 + 'px';
+                card.style.top = heartCenterY - (y * heartRadius / 20) - heartCardSize / 2 + 'px';
+                card.style.width = heartCardSize + 'px';
+                card.style.height = heartCardSize + 'px';
+                card.style.borderRadius = '10%';
+                card.style.transform = 'rotate(0deg)';
+            });
+            break;
+        case 'layered':
+            const layerCardSize = Math.min(pageWidth, pageHeight) / (cards.length > 1 ? 3 : 2);
+            cards.forEach((card, index) => {
+                card.style.left = marginLeft + padding + index * 20 + 'px';
+                card.style.top = marginTop + padding + index * 20 + 'px';
+                card.style.width = layerCardSize + 'px';
+                card.style.height = layerCardSize + 'px';
+                card.style.borderRadius = '5px';
+                card.style.transform = `rotate(${(index % 2 ? 5 : -5)}deg)`;
+                card.style.zIndex = index;
+            });
+            break;
+        default:
+            cards.forEach(card => {
+                card.style.borderRadius = '0';
+                card.style.transform = 'rotate(0deg)';
+            });
+            break;
+    }
 }
 
 function handleKeyDown(e) {
@@ -164,7 +247,7 @@ function moveSelectedCard(deltaX, deltaY) {
                        Math.min(newY, marginTop + pageHeight - selectedCard.clientHeight - padding));
     } else {
         newX = Math.max(0, Math.min(newX, collageArea.clientWidth - selectedCard.clientWidth));
-        newY = Math.max(0, Math.min(newY, collageArea.clientHeight - selectedCard.clientHeight));
+        newY = Math.max(76, Math.min(newY, collageArea.clientHeight - selectedCard.clientHeight));
     }
     
     selectedCard.style.left = newX + 'px';
@@ -217,7 +300,7 @@ function drag(e) {
                     Math.min(y, marginTop + pageHeight - selectedCard.clientHeight - padding));
     } else {
         x = Math.max(0, Math.min(x, collageArea.clientWidth - selectedCard.clientWidth));
-        y = Math.max(0, Math.min(y, collageArea.clientHeight - selectedCard.clientHeight));
+        y = Math.max(76, Math.min(y, collageArea.clientHeight - selectedCard.clientHeight));
     }
     
     if (currentGrid !== 'none' && currentGrid !== 'letter' && gridSize > 0) {
@@ -355,6 +438,8 @@ function randomizePositions() {
         
         card.style.left = position.x + 'px';
         card.style.top = position.y + 'px';
+        card.style.borderRadius = '0';
+        card.style.transform = 'rotate(0deg)';
     });
 }
 
@@ -459,7 +544,16 @@ function exportPNG() {
         
         const canvasImg = new Image();
         canvasImg.onload = function() {
-            ctx.drawImage(canvasImg, x, y, w, h);
+            ctx.save();
+            const rotate = parseFloat(card.style.transform.replace('rotate(', '').replace('deg)', '')) || 0;
+            if (rotate !== 0) {
+                ctx.translate(x + w / 2, y + h / 2);
+                ctx.rotate(rotate * Math.PI / 180);
+                ctx.drawImage(canvasImg, -w / 2, -h / 2, w, h);
+            } else {
+                ctx.drawImage(canvasImg, x, y, w, h);
+            }
+            ctx.restore();
             loadedImages++;
             
             if (loadedImages === totalImages) {
