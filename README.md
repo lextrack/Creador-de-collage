@@ -5,9 +5,10 @@ Una aplicación web simple para crear collages con imágenes. Perfecto para orga
 ## 🚀 Características
 
 - **Carga múltiple de imágenes**: Selecciona y carga varias imágenes a la vez
-- **Arrastrar y soltar**: Mueve las imágenes por el lienzo arrastrándolas
+- **Arrastrar y soltar**: Mueve las imágenes por el lienzo arrastrándolas (y dale al botón de ordenar aleatoriamente)
 - **Redimensionar**: Cambia el tamaño de las imágenes usando el control en la esquina
-- **Grid inteligente**: 6 tamaños de grid diferentes con snap automático
+- **Grid variado**: 6 tamaños de grid diferentes con snap automático
+- **Plantillas para forma**: Plantillas para organizar las fotos con formas básicas
 - **Colores de fondo**: Personaliza el color de fondo del lienzo
 - **Exportar PNG**: Exporta solo la zona con imágenes, sin espacios en blanco
 
