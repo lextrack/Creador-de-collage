@@ -82,7 +82,7 @@ function getRandomPosition(imgWidth, imgHeight) {
         width = 200 * aspectRatio;
     }
     
-    const navbarHeight = 76;
+    const navbarHeight = 56;
     
     if (currentGrid === 'letter') {
         const collageRect = collageArea.getBoundingClientRect();
@@ -114,7 +114,7 @@ function applyTemplate(template) {
     const collageRect = collageArea.getBoundingClientRect();
     let pageWidth = currentGrid === 'letter' ? 816 : collageRect.width;
     let pageHeight = currentGrid === 'letter' ? 1056 : collageRect.height;
-    const navbarHeight = 76;
+    const navbarHeight = 56;
     const marginLeft = currentGrid === 'letter' ? (collageRect.width - pageWidth) / 2 : 0;
     const marginTop = currentGrid === 'letter' ? (collageRect.height - pageHeight) / 2 + navbarHeight : navbarHeight;
     const padding = 20;
@@ -247,7 +247,7 @@ function moveSelectedCard(deltaX, deltaY) {
                        Math.min(newY, marginTop + pageHeight - selectedCard.clientHeight - padding));
     } else {
         newX = Math.max(0, Math.min(newX, collageArea.clientWidth - selectedCard.clientWidth));
-        newY = Math.max(76, Math.min(newY, collageArea.clientHeight - selectedCard.clientHeight));
+        newY = Math.max(56, Math.min(newY, collageArea.clientHeight - selectedCard.clientHeight));
     }
     
     selectedCard.style.left = newX + 'px';
@@ -300,7 +300,7 @@ function drag(e) {
                     Math.min(y, marginTop + pageHeight - selectedCard.clientHeight - padding));
     } else {
         x = Math.max(0, Math.min(x, collageArea.clientWidth - selectedCard.clientWidth));
-        y = Math.max(76, Math.min(y, collageArea.clientHeight - selectedCard.clientHeight));
+        y = Math.max(56, Math.min(y, collageArea.clientHeight - selectedCard.clientHeight));
     }
     
     if (currentGrid !== 'none' && currentGrid !== 'letter' && gridSize > 0) {
@@ -573,7 +573,7 @@ function exportPNG() {
 
 function updateImageCount() {
     const count = document.querySelectorAll('.photo-card').length;
-    imageCountSpan.textContent = count;
+    imageCountSpan.textContent = `Imágenes: ${count}`;
 }
 
 collageArea.addEventListener('click', function(e) {

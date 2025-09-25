@@ -10,19 +10,28 @@ body {
     overflow: hidden;
 }
 
+.navbar {
+    min-height: 56px;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: #fff !important;
+}
+
 .toolbar-items {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
-    flex-wrap: wrap;
-    padding: 10px 0;
+    flex-wrap: nowrap;
 }
 
 .collage-area {
     position: relative;
     width: 100vw;
     height: 100vh;
-    padding-top: 76px;
+    padding-top: 56px;
     background: white;
     overflow: hidden;
 }
@@ -174,17 +183,51 @@ body {
     display: block;
 }
 
-@media (max-width: 992px) {
+.form-control-color {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 2px;
+    border-radius: 4px;
+}
+
+@media (max-width: 1200px) {
     .toolbar-items {
-        gap: 5px;
+        gap: 6px;
     }
     
-    .navbar-nav .nav-item {
-        margin-bottom: 5px;
+    .toolbar-items .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
     }
 }
 
-.form-control-color {
-    width: 40px !important;
-    height: 38px;
+@media (max-width: 992px) {
+    .navbar {
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .toolbar-items {
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+    
+    .toolbar-items input[type="file"] {
+        width: 150px !important;
+    }
+    
+    .toolbar-items select {
+        width: 90px !important;
+    }
+    
+    .navbar-brand {
+        display: none;
+    }
+    
+    .vr {
+        display: none;
+    }
 }

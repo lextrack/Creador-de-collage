@@ -8,32 +8,47 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <div class="navbar-nav toolbar-items">
-                <input type="file" id="imageInput" class="form-control" accept="image/*" multiple style="width: auto;">
-                <button class="btn btn-outline-secondary" onclick="clearCollage()">Limpiar Todo</button>
-                <button class="btn btn-outline-secondary" onclick="randomizePositions()">Posiciones Aleatorias</button>
-                <button class="btn btn-outline-primary" onclick="exportPNG()">Exportar PNG</button>
-                <input type="color" class="form-control form-control-color" id="bgColorInput" value="#ffffff" onchange="changeBackground(this.value)">
-                <select class="form-select" style="width: auto;" onchange="applyTemplate(this.value)">
-                    <option value="none">Sin Plantilla</option>
-                    <option value="grid">Cuadrícula</option>
-                    <option value="circle">Círculo</option>
-                    <option value="heart">Corazón</option>
-                    <option value="layered">Capas</option>
-                </select>
-                <select class="form-select" style="width: auto;" onchange="changeGrid(this.value)">
-                    <option value="none">Sin Grid</option>
-                    <option value="tiny">Grid 5px</option>
-                    <option value="small">Grid 10px</option>
-                    <option value="medium">Grid 20px</option>
-                    <option value="large">Grid 40px</option>
-                    <option value="xlarge">Grid 60px</option>
-                    <option value="xxlarge">Grid 80px</option>
-                    <option value="letter">Hoja</option>
-                </select>
-                <span id="imageCount" class="badge bg-secondary">Imágenes: 0</span>
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <span class="navbar-brand mb-0 h1 fs-5">Creador de Collage</span>
+                
+                <div class="navbar-nav toolbar-items flex-row">
+                    <input type="file" id="imageInput" class="form-control form-control-sm" accept="image/*" multiple style="width: 180px;">
+                    <button class="btn btn-outline-light btn-sm" onclick="clearCollage()">Limpiar Todo</button>
+                    <button class="btn btn-outline-light btn-sm" onclick="randomizePositions()">Aleatorio</button>
+                    <button class="btn btn-primary btn-sm" onclick="exportPNG()">Exportar PNG</button>
+                    <input type="color" class="form-control form-control-color form-control-sm" id="bgColorInput" value="#ffffff" onchange="changeBackground(this.value)" title="Color de fondo">
+                    
+                    <div class="vr mx-2"></div>
+                    
+                    <select class="form-select form-select-sm" style="width: 120px;" onchange="applyTemplate(this.value)">
+                        <option value="none">Sin Plantilla</option>
+                        <option value="grid">Cuadrícula</option>
+                        <option value="circle">Círculo</option>
+                        <option value="heart">Corazón</option>
+                        <option value="layered">Capas</option>
+                    </select>
+                    <select class="form-select form-select-sm" style="width: 100px;" onchange="changeGrid(this.value)">
+                        <option value="none">Sin Grid</option>
+                        <option value="tiny">5px</option>
+                        <option value="small">10px</option>
+                        <option value="medium">20px</option>
+                        <option value="large">40px</option>
+                        <option value="xlarge">60px</option>
+                        <option value="xxlarge">80px</option>
+                        <option value="letter">Hoja</option>
+                    </select>
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <span id="imageCount" class="badge bg-secondary">Imágenes: 0</span>
+                    <a href="https://github.com/lextrack/Creador-de-collage" target="_blank" class="btn btn-outline-light btn-sm" title="Ver en GitHub">
+                        <svg width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
