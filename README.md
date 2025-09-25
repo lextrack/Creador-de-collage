@@ -41,9 +41,7 @@ El grid ayuda a alinear las imágenes de forma precisa:
 
 - **Sin Grid**: Movimiento libre
 - **5px - 80px**: Diferentes tamaños de cuadrícula con snap automático
-- **Hoja**: Para mayor atención en posiciones verticales
-
-Cuando seleccionas un grid, las imágenes se "pegan" automáticamente a la cuadrícula al moverlas.
+- **Hoja**: Para mayor control en posiciones verticales
 
 ## 💾 Exportar
 
@@ -51,4 +49,4 @@ Al hacer clic en "Exportar PNG":
 - Solo se exporta la zona que contiene imágenes
 - Se añade un pequeño margen alrededor
 - El fondo conserva el color seleccionado
-- Se descarga automáticamente como `collage-comics.png`
+- Se descarga automáticamente como `collage-photo.png`
